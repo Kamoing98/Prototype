@@ -52,6 +52,43 @@ class AudioEngine {
   isPlaying = false;
   muted: Record<VoiceId, boolean> = { kick: false, snare: false, hat: false, clap: false };
 
+  /** Pivot S-2: silent mode never opens an AudioContext. The transport then
+   *  runs on performance.now() instead of AudioContext.currentTime. */
+  private silentMode = false;
+  private masterVol = 0.9;
+  private lastStepTime = 0;
+
+  setSilent(s: boolean): void {
+    if (s === this.silentMode) return;
+    this.silentMode = s;
+    // The two clocks use different time domains — a running transport has to
+    // be restarted so nextNoteTime doesn't jump ~seconds in one tick.
+    if (this.isPlaying && this.patternGetter) {
+      const gp = this.patternGetter;
+      this.stop();
+      this.start(gp);
+    }
+  }
+
+  isSilent(): boolean {
+    return this.silentMode;
+  }
+
+  /** Active transport clock: audio hardware clock when audible, monotonic
+   *  JS clock when silent. */
+  private now(): number {
+    if (this.silentMode || !this.ctx) return performance.now() / 1000;
+    return this.ctx.currentTime;
+  }
+
+  /** Fractional step position of the playhead (used by the synthetic scope). */
+  getVisualPhase(): number {
+    if (!this.isPlaying) return -1;
+    const stepDur = 60 / this.bpm / 4;
+    const frac = Math.min(1, (this.now() - this.lastStepTime) / stepDur);
+    return ((this.currentStep - 1 + STEPS) % STEPS) + frac;
+  }
+
   /* ---------------- context & graph ---------------- */
 
   private ensureCtx(): AudioContext {
@@ -66,7 +103,7 @@ class AudioEngine {
     const ctx = new Ctor();
 
     const master = ctx.createGain();
-    master.gain.value = 0.9;
+    master.gain.value = this.masterVol;
 
     // Compressor acts as a safety ceiling so stacked voices never clip.
     const comp = ctx.createDynamicsCompressor();
@@ -102,8 +139,10 @@ class AudioEngine {
     return ctx;
   }
 
-  /** Must be called from a user gesture — browsers gate audio behind interaction. */
+  /** Must be called from a user gesture — browsers gate audio behind interaction.
+   *  No-op in silent mode: the context is never even constructed. */
   resume(): void {
+    if (this.silentMode) return;
     const ctx = this.ensureCtx();
     if (ctx.state === "suspended") void ctx.resume();
   }
@@ -113,8 +152,11 @@ class AudioEngine {
   }
 
   setMasterVolume(v: number): void {
-    const ctx = this.ensureCtx();
-    if (this.master) this.master.gain.setTargetAtTime(v, ctx.currentTime, 0.02);
+    this.masterVol = v;
+    // Don't construct a context just to move a fader — apply when the graph exists.
+    if (this.ctx && this.master) {
+      this.master.gain.setTargetAtTime(v, this.ctx.currentTime, 0.02);
+    }
   }
 
   setBpm(b: number): void {
@@ -124,12 +166,13 @@ class AudioEngine {
   /* ---------------- transport ---------------- */
 
   start(getPattern: () => Pattern): void {
-    const ctx = this.ensureCtx();
     if (this.isPlaying) return;
+    if (!this.silentMode) this.ensureCtx(); // silent mode: no AudioContext at all
     this.patternGetter = getPattern;
     this.currentStep = 0;
     this.played = [];
-    this.nextNoteTime = ctx.currentTime + 0.08;
+    this.lastStepTime = this.now();
+    this.nextNoteTime = this.now() + 0.08;
     this.isPlaying = true;
     this.timer = window.setInterval(() => this.schedule(), TIMER_MS);
     this.schedule();
@@ -145,16 +188,19 @@ class AudioEngine {
   }
 
   private schedule(): void {
-    const ctx = this.ctx;
-    if (!ctx || !this.patternGetter) return;
+    if (!this.patternGetter) return;
+    // In audible mode the loop is bounded by the hardware clock; in silent
+    // mode by the monotonic JS clock. Same algorithm, two time domains.
+    const clock = this.now();
 
-    while (this.nextNoteTime < ctx.currentTime + LOOKAHEAD_S) {
+    while (this.nextNoteTime < clock + LOOKAHEAD_S) {
       const step = this.currentStep;
       const pattern = this.patternGetter();
       for (const v of VOICES) {
         if (pattern[v.id][step] && !this.muted[v.id]) this.trigger(v.id, this.nextNoteTime);
       }
       this.played.push({ step, time: this.nextNoteTime });
+      this.lastStepTime = this.nextNoteTime;
       if (this.played.length > 8) this.played.shift();
 
       const secondsPerStep = 60 / this.bpm / 4; // 16th notes
@@ -163,10 +209,10 @@ class AudioEngine {
     }
   }
 
-  /** Column the hardware would light *right now*, derived from the audio clock. */
+  /** Column the hardware would light *right now*, derived from the active clock. */
   getVisualStep(): number {
-    if (!this.ctx || !this.isPlaying) return -1;
-    const t = this.ctx.currentTime;
+    if (!this.isPlaying) return -1;
+    const t = this.now();
     let step = -1;
     for (const e of this.played) if (e.time <= t + 0.004) step = e.step;
     return step;
@@ -174,6 +220,7 @@ class AudioEngine {
 
   /** Fire a single voice immediately (used by audition + tap-tempo buttons). */
   preview(voice: VoiceId): void {
+    if (this.silentMode) return; // nothing to hear — the grid flash is the feedback
     const ctx = this.ensureCtx();
     if (ctx.state === "suspended") void ctx.resume();
     this.trigger(voice, ctx.currentTime + 0.015);
@@ -182,6 +229,7 @@ class AudioEngine {
   /* ---------------- voice synthesis ---------------- */
 
   private trigger(voice: VoiceId, t: number): void {
+    if (this.silentMode) return; // transport still advances; only the DAC path is skipped
     const ctx = this.ctx;
     const out = this.voiceGains.get(voice);
     if (!ctx || !out) return;

@@ -65,6 +65,14 @@ src/
 | **Troubleshooting autonomy & documentation (40%)** | Journal section: 6 referenced resources with what was extracted from each, 6 real error entries (console output → diagnosis → fix), and a timeline showing each blocker resolved solo with time-to-resolution. |
 | **Resource efficiency / time-to-completion (20%)** | Stats strip: 3h20 total, first audible output in 12 min, 6/6 blockers self-resolved, zero escalations. |
 
+### Pivot rubric (post S-2)
+
+| Criterion | Evidence |
+|---|---|
+| **Adaptation completeness (40%)** | SILENT toggle (zero-audio, no `AudioContext`), pattern-derived synthetic scope, JSON export + validated import — all live in the instrument. |
+| **Architectural / deliverable integrity (30%)** | 9/9 regression matrix in the SDA section; audible code path unchanged, old persistence payloads still load. |
+| **Trade-off documentation & backlog refactoring (30%)** | `SDA-01` section: dropped/modified/added ledgers with rationale and effort, before/after backlog board, net −111 min schedule accounting. |
+
 ## Learning & Blocker Journal (condensed)
 
 ### Resources consulted
@@ -85,6 +93,30 @@ src/
 
 ### Efficiency
 Total: **3h 20m**, solo, unsupervised — first sound at T+12 min, every blocker resolved from documentation and debugging alone.
+
+## Mid-sprint pivot (Scope Delta Analysis — `SDA-01`)
+
+Partway through the sprint a new directive landed (**S-2**): *the demo venue cannot emit audio and reviewers are remote — the prototype must work in complete silence and patterns must be shareable as files. Deadline unchanged.*
+
+The full analysis is rendered in-app (section 03). Summary:
+
+**Added (34 min)**
+- `SIL-01` — SILENT toggle: zero-audio mode that never opens an `AudioContext`. The transport runs on a `performance.now()` clock; `trigger()` records events without building nodes.
+- `EXP-01` — pattern export to a versioned JSON file.
+- `IMP-01` — inline import with per-field validation (4 voices × 16 booleans, BPM clamp) and precise error messages.
+
+**Modified (4 reworks)**
+- Transport: single audio-clock scheduler → dual-clock (audio ⇄ JS), with safe mid-playback domain switching.
+- Oscilloscope: analyser-only → dual-mode; silent mode renders a deterministic pattern-derived trace, clearly labelled synthetic.
+- Audition/preview: sonic no-ops in silent mode (grid flash remains as feedback).
+- Persistence schema: additive `silent` flag; old payloads still load.
+
+**Dropped (−145 min of stretch scope, deliberately)**
+- `SWING-01` swing/shuffle → moved to S3 backlog.
+- `CHAIN-01` pattern chaining/song mode → moved to S3 backlog.
+- `MIC-01` record-from-microphone → WON'T-DO (conflicts with the silent-venue constraint).
+
+**Integrity (did the pivot break anything?)** — 9/9 regression checks PASS: transport, grid, presets, tempo, volume/mute, live scope, persistence, scheduler accuracy, and all documentation sections verified post-pivot. Net schedule impact: **−111 min**; final ship T+3:54, inside the unchanged deadline.
 
 ## Stack
 
