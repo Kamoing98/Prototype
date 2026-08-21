@@ -17,6 +17,7 @@ A working mini-prototype (a 16-step, 4-voice drum sequencer, 100% synthesized �
 - **Live oscilloscope** — real-time waveform via `AnalyserNode`, plus a playhead driven by the audio clock (not the UI timer).
 - **Persistence** — pattern and BPM survive reload via `localStorage`.
 - **Journal site sections** — signal-path diagram, resources ledger, expandable terminal error log, blocker timeline, and measured time/efficiency stats.
+- **Individual Adaptability Index (peer review)** — a confidential, rubric-scored peer evaluation (FORM AI-7) of composure, communication and flexibility across the pivot window: weighted composite index, per-axis behavioural indicators with evidence citations, peer verbatims, calibration note and handling restrictions.
 
 ## Run it
 
@@ -47,11 +48,15 @@ src/
 │   ├── engine.ts       # AudioContext singleton, graph, lookahead scheduler, voice synthesis
 │   └── patterns.ts     # 16-step pattern model + presets
 ├── components/
-│   ├── Sequencer.tsx   # machine panel: transport, BPM/tap, voice rows, grid, presets
-│   ├── Visualizer.tsx  # AnalyserNode oscilloscope canvas
-│   ├── SignalChain.tsx # animated graph diagram (JS timer → audio clock → graph → DAC)
-│   └── Journal.tsx     # resources, error log, timeline, stats
-├── data/journal.ts     # all journal content (resources, errors, timeline, stats)
+│   ├── Sequencer.tsx     # machine panel: transport, BPM/tap, SILENT rocker, export/import, grid, presets
+│   ├── Visualizer.tsx    # oscilloscope canvas (live analyser OR synthetic pattern trace)
+│   ├── SignalChain.tsx   # animated graph diagram (JS timer → audio clock → graph → DAC)
+│   ├── ScopeDelta.tsx    # SDA-01: ledgers, regression matrix, backlog board
+│   ├── AdaptabilityIndex.tsx # FORM AI-7 confidential peer evaluation dossier
+│   └── Journal.tsx       # resources, error log, timeline, stats
+├── data/journal.ts       # Sprint 1 journal content (resources, errors, timeline, stats)
+├── data/scopeDelta.ts    # pivot directive, ledgers, regression matrix, backlog
+├── data/adaptability.ts  # peer-review axes, indicators, verbatims, calibration
 ├── hooks/useReveal.ts  # scroll-reveal + count-up hooks
 ├── App.tsx
 └── index.css           # design tokens, panel/LED/scanline styles, keyframes
@@ -72,6 +77,12 @@ src/
 | **Adaptation completeness (40%)** | SILENT toggle (zero-audio, no `AudioContext`), pattern-derived synthetic scope, JSON export + validated import — all live in the instrument. |
 | **Architectural / deliverable integrity (30%)** | 9/9 regression matrix in the SDA section; audible code path unchanged, old persistence payloads still load. |
 | **Trade-off documentation & backlog refactoring (30%)** | `SDA-01` section: dropped/modified/added ledgers with rationale and effort, before/after backlog board, net −111 min schedule accounting. |
+
+### Peer review (confidential)
+
+| Item | Evidence |
+|---|---|
+| **Individual Adaptability Index** | Section 05: FORM AI-7 peer evaluation — composite index 94/100 (band: exceptional), weighted across composure (30%), communication (35%) and flexibility (35%), each with observed-behaviour indicators, evidence chips, verbatims and a calibration note. Handling restrictions documented; subject anonymised as CANDIDATE-01. |
 
 ## Learning & Blocker Journal (condensed)
 

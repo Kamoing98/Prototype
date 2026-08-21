@@ -3,6 +3,7 @@ import Sequencer from "./components/Sequencer";
 import SignalChain from "./components/SignalChain";
 import ScopeDelta from "./components/ScopeDelta";
 import Journal from "./components/Journal";
+import AdaptabilityIndex from "./components/AdaptabilityIndex";
 import { useReveal } from "./hooks/useReveal";
 
 const TICKER_ITEMS = [
@@ -22,6 +23,9 @@ const TICKER_ITEMS = [
   "patterns portable: JSON export / import",
   "scope shed: swing · chaining · mic = −145 min",
   "regression pass 9/9 after pivot",
+  "peer index 94/100 · band: EXCEPTIONAL",
+  "axis weights: composure 30 · communication 35 · flexibility 35",
+  "escalations during pivot: 0",
 ];
 
 function Led({ color, label, blink, fast }: { color: string; label: string; blink?: boolean; fast?: boolean }) {
@@ -228,6 +232,15 @@ export default function App() {
         <div className="pt-16 sm:pt-20">
           <Journal />
         </div>
+
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-ink-600 to-transparent" />
+        </div>
+
+        {/* ---------- 05 · adaptability index ---------- */}
+        <div className="pt-16 sm:pt-20">
+          <AdaptabilityIndex />
+        </div>
       </main>
 
       {/* ---------- footer ---------- */}
@@ -237,7 +250,7 @@ export default function App() {
             PULSE<span className="text-sig-amber">-</span>8
           </span>
           <span className="font-mono text-[11px] text-ink-400">
-            prototype + journal (Sprint 1) · pivot S-2 absorbed in 34 min, scope shed −145 min, regression 9/9 (Sprint 2).
+            prototype + journal (Sprint 1) · pivot S-2 absorbed in 34 min, scope shed −145 min, regression 9/9 (Sprint 2) · peer index 94/100 (confidential).
           </span>
           <span className="ml-auto flex items-center gap-2 font-mono text-[11px] text-ink-300">
             <span className="h-2 w-2 rounded-full bg-sig-green led-blink shadow-[0_0_8px_rgba(92,217,127,0.8)]" />
