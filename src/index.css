@@ -168,6 +168,15 @@ input[type="range"]::-moz-range-thumb {
 }
 .ticker-track:hover { animation-play-state: paused; }
 
+@keyframes stampin {
+  0% { opacity: 0; transform: rotate(-8deg) scale(1.7); }
+  60% { opacity: 1; transform: rotate(-8deg) scale(0.92); }
+  100% { opacity: 1; transform: rotate(-8deg) scale(1); }
+}
+.stamp {
+  animation: stampin 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) 0.4s both;
+}
+
 @keyframes floatglow {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
