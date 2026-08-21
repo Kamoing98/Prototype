@@ -1,1 +1,191 @@
 @import "tailwindcss";
+
+@theme {
+  --font-display: "Chakra Petch", ui-sans-serif, sans-serif;
+  --font-body: "IBM Plex Sans", ui-sans-serif, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --color-ink-950: #0b1016;
+  --color-ink-900: #0f151d;
+  --color-ink-850: #121a24;
+  --color-ink-800: #161f2b;
+  --color-ink-700: #1d2836;
+  --color-ink-600: #2a3950;
+  --color-ink-500: #3d5170;
+  --color-ink-400: #5d7392;
+  --color-ink-300: #8598b0;
+  --color-ink-200: #b3c1d4;
+  --color-ink-100: #e2e9f2;
+
+  --color-sig-amber: #ffb03a;
+  --color-sig-green: #5cd97f;
+  --color-sig-cyan: #4cc9f0;
+
+  --color-kick: #ff6b57;
+  --color-snare: #ffc247;
+  --color-hat: #46e0b1;
+  --color-clap: #58a6ff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-ink-950);
+  color: var(--color-ink-100);
+  font-family: var(--font-body);
+  background-image:
+    radial-gradient(1100px 520px at 88% -8%, rgba(76, 201, 240, 0.075), transparent 62%),
+    radial-gradient(900px 560px at -12% 24%, rgba(255, 176, 58, 0.06), transparent 60%),
+    radial-gradient(760px 480px at 60% 110%, rgba(92, 217, 127, 0.05), transparent 60%),
+    linear-gradient(rgba(133, 152, 176, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(133, 152, 176, 0.05) 1px, transparent 1px);
+  background-size: auto, auto, auto, 44px 44px, 44px 44px;
+}
+
+::selection {
+  background: rgba(255, 176, 58, 0.35);
+  color: #fff7ea;
+}
+
+/* ---------- hardware panel ---------- */
+.panel {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0) 26%),
+    linear-gradient(180deg, var(--color-ink-850), var(--color-ink-900));
+  border: 1px solid var(--color-ink-600);
+  box-shadow:
+    0 22px 48px rgba(4, 8, 14, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.scan::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.018) 0 1px,
+    transparent 1px 3px
+  );
+}
+
+.screw {
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 30%, #4b5d77, #1a2432 70%);
+  box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.06);
+  position: relative;
+}
+.screw::after {
+  content: "";
+  position: absolute;
+  left: 1.5px;
+  right: 1.5px;
+  top: 50%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.55);
+  transform: rotate(38deg);
+}
+
+/* ---------- controls ---------- */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  height: 18px;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--color-ink-600), var(--color-ink-500));
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  border-radius: 4px;
+  background: var(--color-sig-amber);
+  box-shadow: 0 0 12px rgba(255, 176, 58, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: transform 0.12s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
+}
+input[type="range"]::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-ink-500);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: none;
+  border-radius: 4px;
+  background: var(--color-sig-amber);
+  box-shadow: 0 0 12px rgba(255, 176, 58, 0.55);
+}
+
+/* ---------- keyframes ---------- */
+@keyframes ledblink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+.led-blink { animation: ledblink 2.2s ease-in-out infinite; }
+.led-fast { animation: ledblink 0.5s steps(2, end) infinite; }
+
+@keyframes popin {
+  0% { transform: scale(0.72); }
+  100% { transform: scale(1); }
+}
+.pop { animation: popin 0.16s cubic-bezier(0.2, 1.4, 0.5, 1); }
+
+@keyframes dashslide {
+  to { background-position-x: 18px; }
+}
+.dashflow {
+  background-image: linear-gradient(90deg, currentColor 0 9px, transparent 9px 18px);
+  background-size: 18px 2px;
+  background-repeat: repeat-x;
+  background-position-y: center;
+  animation: dashslide 0.55s linear infinite;
+}
+
+@keyframes tickermove {
+  to { transform: translateX(-50%); }
+}
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: tickermove 26s linear infinite;
+}
+.ticker-track:hover { animation-play-state: paused; }
+
+@keyframes floatglow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.floatglow { animation: floatglow 5s ease-in-out infinite; }
+
+/* ---------- scroll reveal ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.on {
+  opacity: 1;
+  transform: none;
+}
+
+/* thin scrollbar for the terminal */
+.term-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.term-scroll::-webkit-scrollbar-thumb { background: var(--color-ink-600); border-radius: 4px; }
+.term-scroll::-webkit-scrollbar-track { background: transparent; }
