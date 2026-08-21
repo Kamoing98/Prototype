@@ -26,6 +26,19 @@ npm run dev        # local development
 npm run build      # production build → dist/
 ```
 
+## Take it live (get a shareable URL)
+
+The build is fully static — everything the page needs lands in `dist/`, so any static host works. Fastest options, no config required:
+
+| Host | Steps | Link you get |
+|---|---|---|
+| **Netlify Drop** | `npm run build`, then drag the `dist/` folder onto [app.netlify.com/drop](https://app.netlify.com/drop) | `https://<random>.netlify.app` instantly |
+| **Vercel** | `npx vercel` (accepts defaults; framework detected as Vite) | `https://pulse-8-*.vercel.app` |
+| **Cloudflare Pages** | `npm run build`, upload `dist/` via the dashboard, or connect the repo with build command `npm run build` and output `dist` | `https://*.pages.dev` |
+| **GitHub Pages** | Push the repo, set Pages source to a `dist/` build (or add the `gh-pages` branch via `npx gh-pages -d dist`) | `https://<user>.github.io/<repo>` |
+
+> No backend, no env vars, no build-time network calls — the deployed build behaves identically to the local one, audio included (autoplay still requires the first user click, by browser policy).
+
 ## Project structure
 
 ```
