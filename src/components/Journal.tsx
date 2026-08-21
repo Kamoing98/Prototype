@@ -18,7 +18,7 @@ function Resources() {
   const { ref, on } = useReveal<HTMLDivElement>();
   return (
     <div ref={ref} className={`reveal ${on ? "on" : ""}`}>
-      <SectionTag index="03-A" label="Resources consulted" />
+      <SectionTag index="04-A" label="Resources consulted" />
       <h3 className="mb-6 font-display text-2xl font-semibold text-ink-100 sm:text-3xl">
         Where the knowledge came from
       </h3>
@@ -108,7 +108,7 @@ function ErrorLog() {
   const [openId, setOpenId] = useState<string | null>("E-01");
   return (
     <div ref={ref} className={`reveal ${on ? "on" : ""}`}>
-      <SectionTag index="03-B" label="Error log · 6 entries · 6 resolved" />
+      <SectionTag index="04-B" label="Error log · 6 entries · 6 resolved" />
       <h3 className="mb-6 font-display text-2xl font-semibold text-ink-100 sm:text-3xl">
         Everything that broke, and how
       </h3>
@@ -153,7 +153,7 @@ function Timeline() {
         : "border-sig-cyan bg-sig-cyan/20 shadow-[0_0_10px_rgba(76,201,240,0.4)]";
   return (
     <div ref={ref} className={`reveal ${on ? "on" : ""}`}>
-      <SectionTag index="03-C" label="Troubleshooting timeline" />
+      <SectionTag index="04-C" label="Troubleshooting timeline" />
       <h3 className="mb-8 font-display text-2xl font-semibold text-ink-100 sm:text-3xl">
         3h 20m, minute by minute
       </h3>
@@ -206,7 +206,7 @@ function Stats() {
   const { ref, on } = useReveal<HTMLDivElement>();
   return (
     <div ref={ref} className={`reveal ${on ? "on" : ""}`}>
-      <SectionTag index="03-D" label="Resource efficiency readout" />
+      <SectionTag index="04-D" label="Resource efficiency readout" />
       <h3 className="mb-6 font-display text-2xl font-semibold text-ink-100 sm:text-3xl">
         Efficiency, measured
       </h3>
@@ -231,7 +231,7 @@ export default function Journal() {
   return (
     <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
       <div className="mb-12">
-        <SectionTag index="03" label="Documentation deliverable" />
+        <SectionTag index="04" label="Documentation deliverable · Sprint 1" />
         <div className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="font-display text-3xl font-bold leading-tight text-ink-100 sm:text-5xl">
             Learning &amp; Blocker <span className="text-sig-amber">Journal</span>

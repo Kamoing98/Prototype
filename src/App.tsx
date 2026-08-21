@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Sequencer from "./components/Sequencer";
 import SignalChain from "./components/SignalChain";
+import ScopeDelta from "./components/ScopeDelta";
 import Journal from "./components/Journal";
 import { useReveal } from "./hooks/useReveal";
 
@@ -15,6 +16,12 @@ const TICKER_ITEMS = [
   "playhead locked to AudioContext.currentTime",
   "persistence: localStorage",
   "blockers 6 · escalations 0",
+  "pivot S-2 absorbed in 34 min",
+  "silent mode: performance.now() fallback clock",
+  "zero AudioContexts opened while SILENT",
+  "patterns portable: JSON export / import",
+  "scope shed: swing · chaining · mic = −145 min",
+  "regression pass 9/9 after pivot",
 ];
 
 function Led({ color, label, blink, fast }: { color: string; label: string; blink?: boolean; fast?: boolean }) {
@@ -92,6 +99,17 @@ function SignalSection() {
           protected master bus.
         </p>
         <SignalChain />
+        <div className="mt-6 flex items-start gap-3 rounded-lg border border-sig-amber/30 bg-sig-amber/5 px-4 py-3">
+          <span className="mt-0.5 font-mono text-[10px] font-semibold tracking-[0.2em] text-sig-amber">
+            S-2 NOTE
+          </span>
+          <p className="text-[12.5px] leading-relaxed text-ink-300">
+            In <span className="text-sig-amber">SILENT</span> mode this chain is cut at the scheduler: the
+            transport advances on the JS clock, <span className="font-mono text-[11px] text-ink-200">trigger()</span> records
+            events without building nodes, and the scope renders a pattern-derived trace instead of reading
+            the (nonexistent) master bus. No AudioContext is ever constructed.
+          </p>
+        </div>
         <Learnings />
       </div>
     </section>
@@ -139,6 +157,13 @@ export default function App() {
             <span className="rounded border border-ink-600 bg-ink-800 px-2.5 py-1 font-mono text-[10px] tracking-[0.18em] text-ink-200">
               INDIVIDUAL SUBMISSION
             </span>
+            <a
+              href="#scope-delta"
+              title="Scope Delta Analysis — the mid-sprint pivot, documented"
+              className="rounded border border-sig-amber/60 bg-sig-amber/10 px-2.5 py-1 font-mono text-[10px] tracking-[0.18em] text-sig-amber transition-colors hover:bg-sig-amber/20"
+            >
+              PIVOT S-2 · ABSORBED
+            </a>
           </div>
         </div>
       </header>
@@ -172,6 +197,10 @@ export default function App() {
             TAP four beats to set tempo
             <span className="text-ink-600">·</span>
             session auto-saves
+            <span className="text-ink-600">·</span>
+            flip <span className="text-sig-amber">SILENT</span> for the zero-audio pivot demo
+            <span className="text-ink-600">·</span>
+            EXPORT / IMPORT patterns as JSON
           </p>
         </section>
 
@@ -186,7 +215,16 @@ export default function App() {
           <div className="h-px w-full bg-gradient-to-r from-transparent via-ink-600 to-transparent" />
         </div>
 
-        {/* ---------- 03 · journal ---------- */}
+        {/* ---------- 03 · scope delta analysis ---------- */}
+        <div className="pt-16 sm:pt-20">
+          <ScopeDelta />
+        </div>
+
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-ink-600 to-transparent" />
+        </div>
+
+        {/* ---------- 04 · journal ---------- */}
         <div className="pt-16 sm:pt-20">
           <Journal />
         </div>
@@ -199,7 +237,7 @@ export default function App() {
             PULSE<span className="text-sig-amber">-</span>8
           </span>
           <span className="font-mono text-[11px] text-ink-400">
-            prototype (40%) + journal (40%) + shipped in 3h 20m (20%) — evaluated against the rubric, by design.
+            prototype + journal (Sprint 1) · pivot S-2 absorbed in 34 min, scope shed −145 min, regression 9/9 (Sprint 2).
           </span>
           <span className="ml-auto flex items-center gap-2 font-mono text-[11px] text-ink-300">
             <span className="h-2 w-2 rounded-full bg-sig-green led-blink shadow-[0_0_8px_rgba(92,217,127,0.8)]" />
